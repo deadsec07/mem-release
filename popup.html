@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Memory Releaser</title>
+  <style>
+    :root{
+      --bg:#0b0f19; --card:#121a2a; --muted:#7d8aa5; --text:#e5ecff; --accent:#3b82f6; --line:#22314a;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:13px/1.4 system-ui,Segoe UI,Roboto,Arial;min-width:300px}
+    .wrap{padding:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+    h1{font-size:14px;margin:0 0 8px}
+    .row{display:flex;align-items:center;gap:8px;margin:8px 0}
+    .grow{flex:1}
+    input[type="number"], textarea{
+      width:100%;background:#0f1624;border:1px solid var(--line);color:var(--text);
+      border-radius:10px;padding:8px 10px;outline:none
+    }
+    input[type="number"]:focus, textarea:focus{border-color:#335a9e}
+    label{display:flex;align-items:center;gap:8px}
+    .switch{position:relative;width:40px;height:22px;background:#253552;border-radius:999px;cursor:pointer;border:1px solid var(--line)}
+    .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;background:#dce7ff;border-radius:50%;transition:transform .18s ease}
+    input[type="checkbox"]{display:none}
+    input[type="checkbox"]:checked + .switch{background:var(--accent)}
+    input[type="checkbox"]:checked + .switch .knob{transform:translateX(18px)}
+    button{
+      width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+      background:linear-gradient(180deg,#2a3e63,#213254);color:var(--text);font-weight:600;cursor:pointer
+    }
+    button:hover{filter:brightness(1.06)}
+    .muted{color:var(--muted);font-size:12px;margin-top:8px}
+    .a{color:#9dbbff;text-decoration:none}
+    .a:hover{text-decoration:underline}
+    .credit{display:block;text-align:center;margin-top:10px}
+
+    /* Tooltip: always show LEFT of the dot */
+.tip{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  width:16px; height:16px; border-radius:50%; background:#1a2740; color:#cfe0ff; font-weight:700;
+  cursor:default; user-select:none;
+}
+.tip::after{
+  content: attr(data-tip);
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 8px);   /* <-- always left side */
+  left: auto;
+  bottom: auto;
+  transform: translateY(-50%);
+
+  background:#0e1422; border:1px solid var(--line); color:var(--text);
+  padding:8px 10px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.45);
+  max-width:260px; white-space:normal; word-break:normal; overflow-wrap:break-word; text-align:left;
+  line-height:1.25; z-index:9999; opacity:0; pointer-events:none; transition:opacity .12s ease;
+}
+.tip:hover::after{ opacity:1; }
+
+
+    .spacer{height:6px}
+
+    /* Side placement (left/right of the dot) */
+.tip[data-pos="side"]::after{
+  bottom:auto; top:50%; transform:translateY(-50%);
+  right:calc(100% + 8px); left:auto;                /* default = left side */
+}
+.tip[data-pos="side"][data-side="right"]::after{
+  left:calc(100% + 8px); right:auto;                /* use when we must show on the right */
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Memory Releaser</h1>
+
+      <div class="row">
+        <label class="grow">
+          <input id="enabled" type="checkbox" checked>
+          <span class="switch"><span class="knob"></span></span>
+          <span class="grow">Enable</span>
+          <span class="tip" data-tip="Turns the auto-discarder on/off for this profile."></span>
+        </label>
+      </div>
+
+      <div class="row">
+        <span class="grow">Grace (ms)</span>
+        <input id="grace" type="number" value="8000" min="0" step="500" style="width:110px">
+        <span class="tip" data-tip="Example: 8000 = 8 seconds. Higher = less aggressive."></span>
+      </div>
+
+      <div class="row">
+        <label class="grow">
+          <input id="skipAudible" type="checkbox" checked>
+          <span class="switch"><span class="knob"></span></span>
+          <span class="grow">Skip audible tabs</span>
+          <span class="tip" data-tip="Won’t discard tabs while they’re audible (music, calls, videos)."></span>
+        </label>
+      </div>
+
+      <div class="row">
+        <label class="grow">
+          <input id="skipPinned" type="checkbox" checked>
+          <span class="switch"><span class="knob"></span></span>
+          <span class="grow">Skip pinned tabs</span>
+          <span class="tip" data-tip="Keeps your pinned tabs always loaded."></span>
+        </label>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="row" style="align-items:flex-start">
+        <span class="grow" style="margin-top:2px">Whitelist hosts</span>
+        <span class="tip" data-tip="Add domains like:
+meet.google.com
+music.youtube.com"></span>
+      </div>
+      <textarea id="wl" rows="4" placeholder="meet.google.com
+music.youtube.com"></textarea>
+
+      <div class="spacer"></div>
+
+      <button id="apply">Apply</button>
+      <div class="spacer"></div>
+      <button id="now">Release Memory Now</button>
+
+      <div class="muted">Keeps only the active tab in memory.</div>
+    </div>
+
+    <a class="a credit" href="https://hnetechnologies.com" target="_blank" rel="noreferrer">by hnetechnologies.com</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
