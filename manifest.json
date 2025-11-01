@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Memory Releaser (Active-Only)",
-  "version": "1.0.0",
-  "description": "Auto-discards background tabs in the current window; keeps only the active tab in memory.",
+  "name": "Memory Releaser — Keep Only the Active Tab",
+  "short_name": "Memory Releaser",
+  "version": "1.0.2",
+  "description": "Speed up Chrome by automatically discarding background tabs and keeping only the active tab in memory. Less RAM, fewer slowdowns.",
   "permissions": ["tabs", "storage"],
   "background": { "service_worker": "background.js" },
   "action": {
